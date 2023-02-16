@@ -11,46 +11,46 @@
     height: 84px;
     border-bottom: 1px solid #e4e4e4;
 }
-.asset h1 {
-    color: white;
-}
-.assetIcon {
-    width: 60px;
-    height: 60px;
-    position: absolute;
-    top: 12px;
-    left: 12px;
-}
 .assetLeft, .assetRight {
     flex: 1;
 }
 .assetLeft {
-    padding-left: 80px;
     position: relative;
 }
-.assetName {
+.exchangeName {
     font-weight: 500;
-    font-size: 14px;
-    line-height: 84px;
     text-align: left;
+    font-size: 14px;
+    line-height: 16px;
+    padding-top: 20px;
 }
 .assetPriceTitle {
+    font-weight: 500;
     text-align: right;
     font-size: 14px;
     line-height: 16px;
-    padding-top: 26px;
+    padding-top: 20px;
+}
+.assetName {
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 34px;
+    color: #949393;
+    text-align: left;
+    position: relative;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 .assetPrice {
     font-weight: 300;
-    font-size: 14px;
+    font-size: 18px;
+    line-height: 34px;
     color: #949393;
     text-align: right;
     position: relative;
     white-space: nowrap;
     text-overflow: ellipsis;
 }
-/*.assetContainer:hover .assetName,*/
-/*.assetContainer:hover .assetPriceTitle,*/
-/*.assetContainer:hover .assetPrice {*/
-/*    color: #ffffff;*/
-/*}*/
+.assetRight a {
+    text-decoration: none;
+}

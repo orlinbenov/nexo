@@ -1,38 +1,176 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+html, body, #app, #app>div {
+    height: 100%
+}
+body {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    margin: 0;
+    background: #122E82 url(https://nexo.io/media/pages/home/205ad5745c-1656927138/atf-bgr.svg) no-repeat center bottom;
+    background-size: 100% 100%;
+}
+
+:root {
+    --logo-shape-color-1: #bdf;
+    --logo-shape-color-2: #d9eeff;
+    --logo-shape-color-3: #a0ccff;
+    --logo-shape-color-4: #fff;
+    --logo-text-color: #fff;
+}
+
+.b-logo .nexo-logo-shape-1,.b-logo .nexo-logo-shape-2 {
+    fill: var(--logo-shape-color-1)
+}
+
+.b-logo .nexo-logo-shape-3,.b-logo .nexo-logo-shape-4 {
+    fill: var(--logo-shape-color-2)
+}
+
+.b-logo .nexo-logo-shape-5 {
+    fill: var(--logo-shape-color-3)
+}
+
+.b-logo .nexo-logo-shape-6 {
+    fill: var(--logo-shape-color-4)
+}
+
+.b-logo .nexo-logo-letter-e,.b-logo .nexo-logo-letter-n,.b-logo .nexo-logo-letter-o,.b-logo .nexo-logo-letter-x {
+    fill: var(--logo-text-color)
+}
 .App {
-  text-align: center;
+    text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.searchContainer {
+    background: white;
+    border: 1px solid grey;
+    max-width: 320px;
+    border-radius: 16px;
+    margin: 10px auto;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.assetsWrapper {
+    background: white;
+    border: 1px solid grey;
+    max-width: 320px;
+    border-radius: 16px;
+    margin: 10px auto;
+    min-height: 266px;
+    padding-top: 32px;
+    position: relative;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.appHeader {
+    padding: 16px;
 }
 
-.App-link {
-  color: #61dafb;
+.searchInputWrapper {
+    width: 100%;
+}
+.searchButton {
+    background: #a0ccff;
+    margin-bottom: 16px;
+    border: 0;
+    border-radius: 12px;
+    padding: 5px 10px;
+    min-width: 120px;
+}
+.searchButton:not(:disabled):hover {
+    cursor: pointer;
+    background: #2962c3;
+    color: #ffffff;
+}
+.searchInput {
+    border: 0;
+    width: 100%;
+    height: 55px;
+    padding: 10px 15px 10px 40px;
+    box-sizing: border-box;
+    background: url("https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Search_Icon.svg/256px-Search_Icon.svg.png") no-repeat 11px 16px;
+    background-size: 23px;
+}
+.searchInput:focus {
+    outline: none;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.noAssets {
+    margin: 140px auto;
+    height: 45px;
+    box-sizing: border-box;
+    max-width: 260px;
+}
+
+.assetsWrapper .assetContainer:last-child .asset {
+    border-bottom: 0;
+}
+.assetsWrapper > .assetContainer:last-child {
+    background: red;
+}
+.sortIcon {
+    background: url('https://cdn1.iconfinder.com/data/icons/arrows-vol-1-4/24/Sort-1024.png') no-repeat center;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    background-size: contain;
+}
+.sortIcon:hover {
+    cursor: pointer;
+}
+.modal {
+    width: 100%;
+    height: 100%;
+    z-index: 99999;
+}
+.modalShadow {
+    width: 100%;
+    height: 100%;
+    z-index: 99999;
+    background: rgba(0,0,0,0.6);
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.modalContent {
+    width: 320px;
+    height: 400px;
+    background: white;
+    position: absolute;
+    top: 82px;
+    right: 0;
+    left: 0;
+    border-radius: 16px;
+    margin: 0 auto;
+    z-index: 999999;
+}
+.modalClose {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    text-transform: uppercase;
+    font-family: Arial, sans-serif;
+    width: 20px;
+    height: 18px;
+    text-align: center;
+    color: #c0bcbc;
+}
+.modalClose:hover {
+    cursor: pointer;
+}
+.modalHead {
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    border-bottom: 1px solid #e4e4e4;
+}
+.modalBodyRow {
+    padding: 12px;
+    border-bottom: 1px solid #e4e4e4;
+}
+.tradeDirectionbuy {
+    color: green;
+}
+.tradeDirectionsell {
+    color: red;
 }

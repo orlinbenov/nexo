@@ -1,67 +1,102 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import Asset from "../components/Asset";
-import { useNavigate } from 'react-router-dom';
+import Modal from '../components/Modal'
+import { useParams } from 'react-router-dom';
 
-function Asset() {
-    const navigate = useNavigate();
-    const [binanceAssetsList, setBinanceAssetsList] = useState([]);
-    const [bitfinexAssetsList, setBitfinexAssetsList] = useState([]);
-    const [huobiAssetsList, setHuobiAssetsList] = useState([]);
-    const [krakenAssetsList, setKrakenAssetsList] = useState([]);
-    const [searchWord, setSearchWord] = useState("");
+function AssetScreen(modalShown) {
+    const searchWord = useParams().assetName;
+    const defaultList = [
+        { exchange: "Binance", price: null, assetSearchName: searchWord },
+        { exchange: "Huobi", price: null, assetSearchName: searchWord },
+        { exchange: "Kraken", price: null, assetSearchName: searchWord }
+    ];
+    const [exchangePrices, setExchangePrices] = useState(defaultList)
+    const [baseAssetName, setBaseAssetName] = useState("")
+    const [binanceLoaded, setBinanceLoaded] = useState(false);
+    const [huobiLoaded, setHuobiLoaded] = useState(false);
+    const [krakenLoaded, setKrakenLoaded] = useState(false);
+    const [sortingAsc, setSorting] = useState(false);
 
-    const handleClick = () => navigate('/' + searchWord.replace('/','').toLowerCase());
+    const toggleSorting = () => {
+        exchangePrices.sort((a, b) => sortingAsc ? (a.price > b.price ? 1 : -1) : (a.price < b.price ? 1 : -1))
+        setSorting(!sortingAsc);
+    }
+
+    const getExchangePrices = () => {
+        Axios.get("https://api.binance.com/api/v3/ticker/price?symbol=" + searchWord.toUpperCase()).then(
+            (response2) => {
+                setExchangePrices((previousPrices) =>
+                    previousPrices.map((asset) => {
+                        if (asset.exchange !== "Binance") {
+                            return asset;
+                        } else {
+                            return { exchange: "Binance", price: response2.data.price };
+                        }
+                    })
+                );
+                setBinanceLoaded(true);
+            }
+        );
+
+        Axios.get("https://api.huobi.pro/market/detail/merged?symbol=" + searchWord).then(
+            (response) => {
+                setExchangePrices((previousPrices) =>
+                    previousPrices.map((asset) => {
+                        if (asset.exchange !== "Huobi") {
+                            return asset;
+                        } else {
+                            return { exchange: "Huobi", price: (response.data.status === 'error' ? null : response.data.tick.high) };
+                        }
+                    })
+                );
+                setHuobiLoaded(true);
+            }
+        );
+
+        Axios.get("https://api.kraken.com/0/public/Ticker?pair=" + searchWord.toUpperCase()).then(
+            (response) => {
+                setExchangePrices((previousPrices) =>
+                    previousPrices.map((asset) => {
+                        if (asset.exchange !== "Kraken") {
+                            return asset;
+                        } else {
+                            return { exchange: "Kraken", price: (response.data.error.length ? null : response.data.result[Object.keys(response.data.result)[0]]['h'][0]) };
+                        }
+                    })
+                );
+                setKrakenLoaded(true);
+            }
+        );
+    }
 
     useEffect(() => {
-        document.title = 'The Right Place For Your Digital Assets • Nexo';
+        document.title = `${searchWord.toUpperCase()} Asset Information • Nexo`;
 
         Axios.get("https://api.binance.com/api/v3/exchangeInfo").then(
             (response) => {
-                setBinanceAssetsList(response.data.symbols);
+                let binanceSymbols = [...response.data.symbols]
+                let foundAsset = binanceSymbols.filter((asset) => {
+                    return asset.symbol.toLowerCase() === searchWord.replace('/','').toLowerCase();
+                });
+
+                if (foundAsset.length) {
+                    setBaseAssetName(foundAsset[0].baseAsset);
+                } else {
+                    setBinanceLoaded(true);
+                }
+
+                getExchangePrices()
             }
         );
-        Axios.get("https://api.huobi.pro/v1/common/symbols").then(
-            (response) => {
-                setHuobiAssetsList(response.data.data);
-            }
-        );
-        Axios.get("https://api.kraken.com/0/public/AssetPairs").then(
-            (response) => {
-                setKrakenAssetsList(response.data.result);
-            }
-        );
-        Axios.get("https://api.bitfinex.com/v1/symbols").then(
-            (response) => {
-                setBitfinexAssetsList(response.data.result);
-            }
-        );
+
+        setInterval(getExchangePrices, 10000)
     }, []);
-
-    const filteredBinanceAsset = binanceAssetsList.filter((asset) => {
-        return asset.symbol.toLowerCase() === searchWord.replace('/','').toLowerCase();
-    });
-
-    const filteredBitfinexAsset = bitfinexAssetsList.filter((asset) => {
-        return asset.symbol.toLowerCase() === searchWord.replace('/','').toLowerCase();
-    });
-
-    const filteredHuobiAsset = huobiAssetsList.filter((asset) => {
-        return asset.symbol.toLowerCase() === searchWord.replace('/','').toLowerCase();
-    });
-
-    const krakenArrayList = Object.keys(krakenAssetsList);
-
-    function checkKrakenAsset(asset) {
-        return asset.toLowerCase() === searchWord.replace('/','').toLowerCase()
-    }
-
-    const filteredKrakenAsset = krakenArrayList.filter(checkKrakenAsset);
 
     return (
         <div className="App">
             <div className="appHeader">
-                <a className="b-logo" href="https://nexo.io" target="_blank">
+                <a className="b-logo" href="/">
                     <svg width="142" height="35" viewBox="0 0 142 35" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path className="nexo-logo-letter-o"
                               d="M131.664 8.00053C129.59 7.97288 127.555 8.56254 125.817 9.69451C124.08 10.8265 122.718 12.4497 121.905 14.3576C121.092 16.2656 120.865 18.3722 121.253 20.4096C121.64 22.4469 122.625 24.323 124.081 25.7993C125.538 27.2756 127.401 28.2853 129.433 28.7002C131.465 29.1151 133.574 28.9163 135.493 28.1292C137.412 27.3421 139.053 26.0021 140.208 24.2798C141.363 22.5574 141.98 20.5304 141.98 18.4565C141.981 15.7074 140.898 13.0688 138.967 11.1119C137.036 9.15496 134.413 8.03719 131.664 8.00053ZM131.664 24.4164C130.846 24.4604 130.028 24.3374 129.259 24.0547C128.49 23.772 127.787 23.3356 127.192 22.7722C126.598 22.2087 126.124 21.5301 125.801 20.7776C125.477 20.0251 125.31 19.2146 125.31 18.3955C125.31 17.5764 125.477 16.7659 125.801 16.0134C126.124 15.2609 126.598 14.5823 127.192 14.0189C127.787 13.4555 128.49 13.0191 129.259 12.7364C130.028 12.4537 130.846 12.3306 131.664 12.3746C133.205 12.4575 134.655 13.128 135.716 14.2481C136.778 15.3681 137.369 16.8525 137.369 18.3955C137.369 19.9386 136.778 21.4229 135.716 22.543C134.655 23.663 133.205 24.3335 131.664 24.4164Z"
@@ -95,43 +130,35 @@ function Asset() {
                 </a>
             </div>
             <div className="assetsWrapper">
-                <div className="searchInputWrapper">
-                    <input
-                        className="searchInput"
-                        type="text"
-                        placeholder="Search among thousands of assets..."
-                        onChange={(event) => {
-                            setSearchWord(event.target.value);
-                        }}
-                    />
-                    <button onClick={handleClick}>Go!</button>
-                </div>
-                {(searchWord !== '' && (filteredBinanceAsset.length || filteredBitfinexAsset.length || filteredHuobiAsset.length || filteredKrakenAsset.length)) ?
-                    (<div>
-                        <Asset
-                            exchange="Binance"
-                            asset={filteredBinanceAsset[0]}
-                        />
-                        <Asset
-                            exchange="Bitfinex"
-                            asset={filteredBitfinexAsset[0]}
-                        />
-                        <Asset
-                            exchange="Huobi"
-                            asset={filteredHuobiAsset[0]}
-                        />
+                {(binanceLoaded && krakenLoaded && huobiLoaded) ?
+                    ( baseAssetName ?
+                        <div>
+                            <div onClick={toggleSorting} className="sortIcon"></div>
+                            {exchangePrices.map((asset, index) => {
+                                return (
+                                    <Asset
+                                        key={index}
+                                        name={baseAssetName}
+                                        asset={asset}
+                                    />
+                                );
+                            })}
+                        </div>
+                                : <div className="noAssets">No assets found</div>
 
-                        <Asset
-                            exchange="Kraken"
-                            asset={krakenAssetsList[filteredKrakenAsset]}
-                        />
-                    </div>)
+                    )
                     :
-                    <div className="noAssets">There are no assets found based on your search criteria</div>
+                    <div className="noAssets">Crawling data in progress...</div>
                 }
             </div>
+
+            {modalShown.modal &&
+                <Modal
+                    assetName={searchWord}
+                />
+            }
         </div>
     );
 }
 
-export default Asset
+export default AssetScreen
