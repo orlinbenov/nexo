@@ -1,0 +1,56 @@
+.assetContainer {
+    padding: 0 12px;
+}
+.assetContainer:hover {
+    cursor: pointer;
+    background: #daedff;
+}
+.asset {
+    display: flex;
+    width: 100%;
+    height: 84px;
+    border-bottom: 1px solid #e4e4e4;
+}
+.asset h1 {
+    color: white;
+}
+.assetIcon {
+    width: 60px;
+    height: 60px;
+    position: absolute;
+    top: 12px;
+    left: 12px;
+}
+.assetLeft, .assetRight {
+    flex: 1;
+}
+.assetLeft {
+    padding-left: 80px;
+    position: relative;
+}
+.assetName {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 84px;
+    text-align: left;
+}
+.assetPriceTitle {
+    text-align: right;
+    font-size: 14px;
+    line-height: 16px;
+    padding-top: 26px;
+}
+.assetPrice {
+    font-weight: 300;
+    font-size: 14px;
+    color: #949393;
+    text-align: right;
+    position: relative;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+/*.assetContainer:hover .assetName,*/
+/*.assetContainer:hover .assetPriceTitle,*/
+/*.assetContainer:hover .assetPrice {*/
+/*    color: #ffffff;*/
+/*}*/
